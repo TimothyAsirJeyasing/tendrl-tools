@@ -304,28 +304,30 @@ def get_node_block_devices(disks_map):
         )
     return block_devices
 
+def run():
+    print "Get node disk details"
+    disks = get_node_disks()
+    print disks
+
+    print "\n\nDisk details are as follows:"
+    disktub = get_disk_details()
+    print disktub
+
+    disk_map = {}
+    print "\n\nNode block device details"
+    for disk in disks:
+        _map = dict(disk_id=disks[disk]['disk_id'], ssd=False)
+        disk_map[disks[disk]['disk_name']] = _map
+        block_devices = get_node_block_devices(disk_map)
+        print block_devices
+        print "-------------------------"
+
+    print "\n\nDevice IDs going to etcd"
+    for disk in disks:
+        device_id = disks[disk]['disk_id']
+        mod = device_id.replace("/", "_").replace("_", "", 1)
+        print "-->>", device_id, ":ISNOW:", mod
 
 
-print "Get node disk details"
-disks = get_node_disks()
-print disks
-
-print "\n\nDisk details are as follows:"
-disktub = get_disk_details()
-print disktub
-
-disk_map = {}
-print "\n\nNode block device details"
-for disk in disks:
-    _map = dict(disk_id=disks[disk]['disk_id'], ssd=False)
-    disk_map[disks[disk]['disk_name']] = _map
-    block_devices = get_node_block_devices(disk_map)
-    print block_devices
-    print "-------------------------"
-
-print "\n\nDevice IDs going to etcd"
-for disk in disks:
-    device_id = disks[disk]['disk_id']
-    mod = device_id.replace("/", "_").replace("_", "", 1)
-    print "-->>", device_id, ":ISNOW:", mod
-
+while True:
+    run()
